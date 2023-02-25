@@ -25,7 +25,7 @@ const manifest: Manifest.WebExtensionManifest = {
   },
   content_scripts: [
     {
-      matches: ['http://*/*', 'https://*/*', '<all_urls>'],
+      matches: ['https://chat.openai.com/*'],
       js: ['src/pages/content/index.js'],
       css: ['contentStyle.css'],
     },
