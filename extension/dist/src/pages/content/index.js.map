@@ -1,1 +1,0 @@
-{"version":3,"file":"index.js","sources":["../../../../src/pages/content/index.ts"],"sourcesContent":["try {\n  console.log('content script loaded');\n} catch (e) {\n  console.error(e);\n}\n"],"names":["e"],"mappings":"AAAA,GAAI,CACF,QAAQ,IAAI,uBAAuB,CACrC,OAASA,EAAT,CACE,QAAQ,MAAMA,CAAC,CACjB"}
