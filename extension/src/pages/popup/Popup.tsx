@@ -1,8 +1,57 @@
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import ReactJson from "react-json-view";
+import { theme } from "webextension-polyfill";
 
 export default function Popup(): JSX.Element {
+    const schemas = [
+        {
+            label: "Basic Information",
+            schema: {
+                firstname: "",
+                lastname: "",
+                email: "",
+                phone: "",
+                address: "",
+            },
+        },
+        {
+            label: "Work Experience",
+            schema: {
+                firstname: "",
+                lastname: "",
+                experience: [
+                    {
+                        jobTitle: "",
+                        company: "",
+                        startDate: "",
+                        endDate: "",
+                        description: "",
+                    },
+                    {
+                        jobTitle: "",
+                        company: "",
+                        startDate: "",
+                        endDate: "",
+                        description: "",
+                    },
+                ],
+            },
+        },
+        {
+            label: "Personal Interests",
+            schema: {
+                firstname: "",
+                lastname: "",
+                interests: ["", "", ""],
+                skills: ["", "", ""],
+                languages: ["", "", ""],
+            },
+        },
+    ];
+
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+    const [schema, setSchema] = useState<any>(schemas[0].schema);
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         if (!acceptedFiles) return;
@@ -22,10 +71,13 @@ export default function Popup(): JSX.Element {
             formData.append("files", file);
         });
 
-        const response = await fetch("https://mydomain.com:3000/resume-to-text", {
-            method: "POST",
-            body: formData,
-        });
+        const response = await fetch(
+            "https://mydomain.com:3000/resume-to-text",
+            {
+                method: "POST",
+                body: formData,
+            }
+        );
 
         const data = await response.json();
         return data;
@@ -47,8 +99,32 @@ export default function Popup(): JSX.Element {
         );
     };
 
+    const handleUpdateSchema = (updated_src: any) => {
+        setSchema(updated_src);
+    };
+
+	const handleSelectSchema = (e: any) => {
+		setSchema(schemas.find((schema) => schema.label === e.target.value)?.schema);
+	}
+
     return (
-        <div className="text-center h-full p-3 bg-gray-800 text-white">
+        <div className="text-center h-full p-3 bg-[#1E1E1E] text-white">
+			<h1 className="text-2xl font-bold">Resume Dyno</h1>
+			<select className="bg-[#1E1E1E] cursor-pointer text-white text-lg outline-none my-2" onChange={handleSelectSchema}>
+				{schemas.map((schema) => (
+					<option className="bg-[#1E1E1E] text-white" value={schema.label}>{schema.label}</option>
+				))}
+			</select>
+            <div className="text-sm text-left my-2 mb-4">
+                <ReactJson
+                    theme="twilight"
+                    displayDataTypes={false}
+                    src={schema}
+                    onAdd={(e) => handleUpdateSchema(e.updated_src)}
+                    onEdit={(e) => handleUpdateSchema(e.updated_src)}
+                    onDelete={(e) => handleUpdateSchema(e.updated_src)}
+                />
+            </div>
             <div className="flex flex-col gap-4 items-center justify-center w-full">
                 <div
                     className="flex flex-col items-center justify-center w-full border-2 border-white bg-white bg-opacity-0 border-dashed rounded-xl cursor-pointer hover:bg-opacity-20 transition-all"
