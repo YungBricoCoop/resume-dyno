@@ -2,51 +2,16 @@ import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import ReactJson from "react-json-view";
 
+import constants from "../../constants/constants";
+import resume from "../../constants/resume";
+
 import logo from "../../assets/img/logo.png";
 
 export default function Popup(): JSX.Element {
-    const schemas = [
-        {
-            label: "Default",
-            schema: {
-                firstname: "",
-                lastname: "",
-                email: "",
-                phone: "",
-                address: "",
-            },
-        },
-        {
-            label: "Work Experience",
-            schema: {
-                firstname: "",
-                lastname: "",
-                experience: [
-                    {
-                        jobt_itle: "",
-                        company: "",
-                        start_date: "",
-                        end_date: "",
-                        description: "",
-                    },
-                ],
-            },
-        },
-        {
-            label: "Personal Interests",
-            schema: {
-                firstname: "",
-                lastname: "",
-                interests: [""],
-                skills: [""],
-                languages: [""],
-            },
-        },
-    ];
     const localSchema = localStorage.getItem("schema");
     const defaultSchema = localSchema
-        ? schemas.find((schema) => schema.label === localSchema)?.schema
-        : schemas[0].schema;
+        ? resume.SCHEMAS.find((schema) => schema.label === localSchema)?.schema
+        : resume.SCHEMAS[0].schema;
 
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [schema, setSchema] = useState<any>(defaultSchema);
@@ -58,10 +23,7 @@ export default function Popup(): JSX.Element {
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
-        accept: {
-            "application/pdf": [".pdf", ".PDF"],
-        },
-		multiple: false,
+        ...resume.DROP_ZONE,
     });
 
     const sendFiles = async () => {
@@ -70,13 +32,10 @@ export default function Popup(): JSX.Element {
             formData.append("files", file);
         });
 
-        const response = await fetch(
-            "https://serv.elwan.ch:3000/resume-to-text",
-            {
-                method: "POST",
-                body: formData,
-            }
-        );
+        const response = await fetch(constants.BACKEND_URL, {
+            method: "POST",
+            body: formData,
+        });
 
         const data = await response.json();
         return data;
@@ -105,7 +64,8 @@ export default function Popup(): JSX.Element {
 
     const handleSelectSchema = (e: any) => {
         setSchema(
-            schemas.find((schema) => schema.label === e.target.value)?.schema
+            resume.SCHEMAS.find((schema) => schema.label === e.target.value)
+                ?.schema
         );
         localStorage.setItem("schema", e.target.value);
     };
@@ -113,17 +73,14 @@ export default function Popup(): JSX.Element {
     return (
         <div className="text-center h-full p-3 bg-[#1E1E1E] text-white">
             <div className="flex justify-center items-end">
-                <img
-                    src={logo}
-                    className="h-6"
-                />
+                <img src={logo} className="h-6" />
                 <h1 className="text-2xl font-bold">esume Dyno</h1>
             </div>
             <select
                 className="bg-[#1E1E1E] cursor-pointer text-white text-lg outline-none my-2"
                 onChange={handleSelectSchema}
             >
-                {schemas.map((schema) => (
+                {resume.SCHEMAS.map((schema) => (
                     <option
                         className="bg-[#1E1E1E] text-white"
                         value={schema.label}
