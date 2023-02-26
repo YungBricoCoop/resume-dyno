@@ -1,7 +1,12 @@
 Resume Dyno
 ===========================
 
-Transform your resumes into dynamic JSON with Resume Dyno, a Chrome extension designed to work with ChatGPT. With Resume Dyno, you can choose a JSON schema, modify it as needed, and select a PDF resume to create a dynamic JSON output.
+Transform your resume into dynamic JSON with Resume Dyno, a **Chrome extension** designed to work with **ChatGPT**. 
+
+> With Resume Dyno, you can choose a JSON schema, modify it as needed, and select a PDF resume to create a dynamic JSON output.
+
+![image](https://user-images.githubusercontent.com/42273436/221424682-b9e79148-3a90-49b5-8b68-90e92ded42f4.png)
+
 
 🚀 Deployment
 ----------
