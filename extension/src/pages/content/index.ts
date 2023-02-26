@@ -5,7 +5,7 @@ try {
 		const textarea = document.querySelector('textarea');
 
 		// set the value of the textarea
-		textarea.value = message.resume;
+		textarea.value = message.resumes[0];
 
 		// fit the textarea to the content
 		textarea.style.height = 'auto';
