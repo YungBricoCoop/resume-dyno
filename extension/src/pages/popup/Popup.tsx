@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import useIsChatGPTPage from "./useIsChatGPTPage";
 import ReactJson from "react-json-view";
 
 import constants from "../../constants/constants";
@@ -12,6 +13,8 @@ export default function Popup(): JSX.Element {
     const defaultSchema = localSchema
         ? resume.SCHEMAS.find((schema) => schema.label === localSchema)?.schema
         : resume.SCHEMAS[0].schema;
+
+    const isChatGPTPage = useIsChatGPTPage();
 
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [schema, setSchema] = useState<any>(defaultSchema);
@@ -69,6 +72,29 @@ export default function Popup(): JSX.Element {
         );
         localStorage.setItem("schema", e.target.value);
     };
+
+    if (!isChatGPTPage) {
+        return (
+            <div className="text-center h-full p-3 bg-[#1E1E1E] text-white">
+                <div className="flex justify-center items-end">
+                    <img src={logo} className="h-6" />
+                    <h1 className="text-2xl font-bold">esume Dyno</h1>
+                </div>
+                <p className="text-sm mt-2">
+                    Please open{" "}
+                    <a
+                        href="https://chat.openai.com/"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[#EBA235]"
+                    >
+                        CHAT GPT
+                    </a>{" "}
+                    to use Resume Dyno
+                </p>
+            </div>
+        );
+    }
 
     return (
         <div className="text-center h-full p-3 bg-[#1E1E1E] text-white">

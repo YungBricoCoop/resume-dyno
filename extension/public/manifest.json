@@ -32,5 +32,12 @@
       ],
       "matches": []
     }
+  ],
+  "permissions": [
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://*/*",
+    "http://*/*"
   ]
 }
