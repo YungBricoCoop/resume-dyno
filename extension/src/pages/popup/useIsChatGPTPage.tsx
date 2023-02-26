@@ -6,15 +6,13 @@ const useIsChatGPTPage = () => {
     useEffect(() => {
         chrome.tabs.query(
             { active: true, currentWindow: true },
-            function (tabs) {
-				console.log(tabs);
+            (tabs: any) => {
                 const currentUrl = tabs[0].url;
-				console.log(currentUrl);
+                if (!currentUrl) return;
                 if (currentUrl.includes("chat.openai.com")) {
-                    setIsChatGPTPage(true);
-                } else {
-                    setIsChatGPTPage(false);
+                    return setIsChatGPTPage(true);
                 }
+                setIsChatGPTPage(false);
             }
         );
     }, []);
