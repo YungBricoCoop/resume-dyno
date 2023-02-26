@@ -1,7 +1,8 @@
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import ReactJson from "react-json-view";
-import { theme } from "webextension-polyfill";
+
+import logo from "../../assets/img/logo.png";
 
 export default function Popup(): JSX.Element {
     const schemas = [
@@ -60,6 +61,7 @@ export default function Popup(): JSX.Element {
         accept: {
             "application/pdf": [".pdf", ".PDF"],
         },
+		multiple: false,
     });
 
     const sendFiles = async () => {
@@ -110,7 +112,13 @@ export default function Popup(): JSX.Element {
 
     return (
         <div className="text-center h-full p-3 bg-[#1E1E1E] text-white">
-            <h1 className="text-2xl font-bold">Resume Dyno</h1>
+            <div className="flex justify-center items-end">
+                <img
+                    src={logo}
+                    className="h-6"
+                />
+                <h1 className="text-2xl font-bold">esume Dyno</h1>
+            </div>
             <select
                 className="bg-[#1E1E1E] cursor-pointer text-white text-lg outline-none my-2"
                 onChange={handleSelectSchema}
@@ -119,7 +127,7 @@ export default function Popup(): JSX.Element {
                     <option
                         className="bg-[#1E1E1E] text-white"
                         value={schema.label}
-						selected={schema.label === localSchema}
+                        selected={schema.label === localSchema}
                     >
                         {schema.label}
                     </option>
@@ -135,27 +143,16 @@ export default function Popup(): JSX.Element {
                     onDelete={(e) => handleUpdateSchema(e.updated_src)}
                 />
             </div>
-            <div className="flex flex-col gap-4 items-center justify-center w-full">
+            <div className="flex flex-col gap-4 items-center justify-center w-full mb-2">
                 <div
-                    className="flex flex-col items-center justify-center w-full border-2 border-white bg-white bg-opacity-0 border-dashed rounded-xl cursor-pointer hover:bg-opacity-20 transition-all"
+                    className="group flex flex-col items-center justify-center w-full border-2 border-white bg-white bg-opacity-0 border-dashed rounded-xl cursor-pointer hover:bg-opacity-20 transition-all"
                     {...getRootProps()}
                 >
                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                        <svg
-                            aria-hidden="true"
-                            className="w-10 h-10 mb-3 "
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                            ></path>
-                        </svg>
+                        <img
+                            src={logo}
+                            className="w-10 group-hover:scale-110 hover:rotate-3 transition-transform"
+                        />
                         <p className="mb-2 text-sm">
                             <span className="font-semibold">
                                 Click to upload
@@ -163,19 +160,19 @@ export default function Popup(): JSX.Element {
                             or drag and drop
                         </p>
                         <p className="text-xs text-gray-500">(PDF)</p>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                            {selectedFiles.map((file) => (
+                                <span className="flex items-center justify-center bg-gray-700 rounded-md px-2">
+                                    {file.name}
+                                </span>
+                            ))}
+                        </div>
                     </div>
                     <input
                         type="file"
                         className="hidden"
                         {...getInputProps()}
                     />
-                </div>
-                <div className="flex flex-wrap gap-2 my-2">
-                    {selectedFiles.map((file) => (
-                        <span className="flex items-center justify-center bg-gray-700 rounded-md px-2">
-                            {file.name}
-                        </span>
-                    ))}
                 </div>
             </div>
 
