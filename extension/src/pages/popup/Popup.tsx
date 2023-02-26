@@ -6,7 +6,7 @@ import { theme } from "webextension-polyfill";
 export default function Popup(): JSX.Element {
     const schemas = [
         {
-            label: "Basic Information",
+            label: "Default",
             schema: {
                 firstname: "",
                 lastname: "",
@@ -22,17 +22,10 @@ export default function Popup(): JSX.Element {
                 lastname: "",
                 experience: [
                     {
-                        jobTitle: "",
+                        jobt_itle: "",
                         company: "",
-                        startDate: "",
-                        endDate: "",
-                        description: "",
-                    },
-                    {
-                        jobTitle: "",
-                        company: "",
-                        startDate: "",
-                        endDate: "",
+                        start_date: "",
+                        end_date: "",
                         description: "",
                     },
                 ],
@@ -43,15 +36,19 @@ export default function Popup(): JSX.Element {
             schema: {
                 firstname: "",
                 lastname: "",
-                interests: ["", "", ""],
-                skills: ["", "", ""],
-                languages: ["", "", ""],
+                interests: [""],
+                skills: [""],
+                languages: [""],
             },
         },
     ];
+    const localSchema = localStorage.getItem("schema");
+    const defaultSchema = localSchema
+        ? schemas.find((schema) => schema.label === localSchema)?.schema
+        : schemas[0].schema;
 
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-    const [schema, setSchema] = useState<any>(schemas[0].schema);
+    const [schema, setSchema] = useState<any>(defaultSchema);
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         if (!acceptedFiles) return;
@@ -72,7 +69,7 @@ export default function Popup(): JSX.Element {
         });
 
         const response = await fetch(
-            "https://mydomain.com:3000/resume-to-text",
+            "https://serv.elwan.ch:3000/resume-to-text",
             {
                 method: "POST",
                 body: formData,
@@ -93,6 +90,7 @@ export default function Popup(): JSX.Element {
             { active: true, currentWindow: true },
             function (tabs) {
                 chrome.tabs.sendMessage(tabs[0].id, {
+                    schema,
                     resumes,
                 });
             }
@@ -103,18 +101,30 @@ export default function Popup(): JSX.Element {
         setSchema(updated_src);
     };
 
-	const handleSelectSchema = (e: any) => {
-		setSchema(schemas.find((schema) => schema.label === e.target.value)?.schema);
-	}
+    const handleSelectSchema = (e: any) => {
+        setSchema(
+            schemas.find((schema) => schema.label === e.target.value)?.schema
+        );
+        localStorage.setItem("schema", e.target.value);
+    };
 
     return (
         <div className="text-center h-full p-3 bg-[#1E1E1E] text-white">
-			<h1 className="text-2xl font-bold">Resume Dyno</h1>
-			<select className="bg-[#1E1E1E] cursor-pointer text-white text-lg outline-none my-2" onChange={handleSelectSchema}>
-				{schemas.map((schema) => (
-					<option className="bg-[#1E1E1E] text-white" value={schema.label}>{schema.label}</option>
-				))}
-			</select>
+            <h1 className="text-2xl font-bold">Resume Dyno</h1>
+            <select
+                className="bg-[#1E1E1E] cursor-pointer text-white text-lg outline-none my-2"
+                onChange={handleSelectSchema}
+            >
+                {schemas.map((schema) => (
+                    <option
+                        className="bg-[#1E1E1E] text-white"
+                        value={schema.label}
+						selected={schema.label === localSchema}
+                    >
+                        {schema.label}
+                    </option>
+                ))}
+            </select>
             <div className="text-sm text-left my-2 mb-4">
                 <ReactJson
                     theme="twilight"
@@ -160,7 +170,7 @@ export default function Popup(): JSX.Element {
                         {...getInputProps()}
                     />
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 my-2">
                     {selectedFiles.map((file) => (
                         <span className="flex items-center justify-center bg-gray-700 rounded-md px-2">
                             {file.name}
@@ -169,7 +179,12 @@ export default function Popup(): JSX.Element {
                 </div>
             </div>
 
-            <button onClick={handleUploadResume}>Upload resume(s)</button>
+            <button
+                className="w-full p-2 bg-white bg-opacity-10 rounded-xl text-lg font-bold hover:scale-105 hover:bg-opacity-20 transition-transform"
+                onClick={handleUploadResume}
+            >
+                Do some magic
+            </button>
         </div>
     );
 }
