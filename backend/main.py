@@ -11,9 +11,9 @@ async def extract_text(files: List[UploadFile] = File(...)):
 	for file in files:
 		text = ""
 		content = await file.read()
-		pdf_reader = PyPDF2.PdfFileReader(BytesIO(content))
-		for page_num in range(pdf_reader.getNumPages()):
-			page = pdf_reader.getPage(page_num)
-			text += f"[PAGE]{page.extractText()}[/PAGE]"
+		pdf_reader = PyPDF2.PdfReader(BytesIO(content))
+		for page_num in range(len(pdf_reader.pages)):
+			page = pdf_reader.pages[page_num]
+			text += f"[PAGE]{page.extract_text()}[/PAGE]"
 		results.append({"filename": file.filename, "text": text})
 	return results
